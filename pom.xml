@@ -1,0 +1,73 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.eqasim</groupId>
+	<artifactId>auckland_example</artifactId>
+	<version>1.0.0</version>
+
+	<repositories>
+		<repository>
+			<id>osgeo</id>
+			<name>Geotools repository</name>
+			<url>http://download.osgeo.org/webdav/geotools</url>
+		</repository>
+		<repository>
+			<id>matsim</id>
+			<url>http://dl.bintray.com/matsim/matsim</url>
+		</repository>
+		<repository>
+			<id>matsim-eth</id>
+			<url>http://dl.bintray.com/matsim-eth/matsim</url>
+		</repository>
+		<repository>
+			<id>eqasim-eth</id>
+			<url>http://dl.bintray.com/matsim-eth/eqasim</url>
+		</repository>
+		<repository>
+			<id>swiss-rail</id>
+			<url>https://schweizerischebundesbahnen.bintray.com/simba.mvn</url>
+		</repository>
+		<repository>
+			<id>tensor-mvn-repo</id>
+			<url>https://raw.github.com/idsc-frazzoli/tensor/mvn-repo/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>amodeus-mvn-repo</id>
+			<url>https://raw.github.com/idsc-frazzoli/amodeus/mvn-repo/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>ch.ethz.idsc</groupId>
+			<artifactId>amodeus</artifactId>
+			<version>1.8.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eqasim</groupId>
+			<artifactId>auckland</artifactId>
+			<version>1.0.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eqasim</groupId>
+			<artifactId>automated_vehicles</artifactId>
+			<version>1.0.3</version>
+		</dependency>
+	</dependencies>
+</project>
