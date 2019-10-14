@@ -1,4 +1,4 @@
-package org.eqasim.auckland_example;
+package org.eqasim.auckland_example.simulation;
 
 import org.matsim.core.utils.geometry.CoordinateTransformation;
 import org.matsim.core.utils.geometry.transformations.GeotoolsTransformation;

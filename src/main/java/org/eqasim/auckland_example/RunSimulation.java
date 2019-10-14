@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 
 import org.eqasim.auckland.AucklandModule;
+import org.eqasim.auckland_example.simulation.AucklandAvModule;
+import org.eqasim.auckland_example.simulation.AucklandDispatcherModule;
+import org.eqasim.auckland_example.simulation.AucklandReferenceFrame;
 import org.eqasim.automated_vehicles.components.AvConfigurator;
 import org.eqasim.automated_vehicles.components.EqasimAvConfigGroup;
 import org.eqasim.automated_vehicles.mode_choice.AvModeChoiceModule;
@@ -39,52 +42,53 @@ import ch.ethz.matsim.av.config.AVConfigGroup;
 import ch.ethz.matsim.av.config.operator.OperatorConfig;
 import ch.ethz.matsim.av.framework.AVModule;
 import ch.ethz.matsim.av.framework.AVQSimModule;
+import ch.ethz.matsim.av.routing.AVRoute;
+import ch.ethz.matsim.av.routing.AVRouteFactory;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
 import ch.sbb.matsim.config.SwissRailRaptorConfigGroup;
 
 public class RunSimulation {
 	static public void main(String[] args) throws ConfigurationException, IOException {
 		CommandLine cmd = new CommandLine.Builder(args) //
-				.requireOptions("config-path", "fleet-size") //
+				.allowOptions("config-path") //
 				.allowPrefixes("mode-parameter", "cost-parameter") //
 				.build();
 
-		Config config = ConfigUtils.loadConfig(cmd.getOptionStrict("config-path"), new SwissRailRaptorConfigGroup(), //
+		// If no specific path is provided, use the standard path in the project
+		// directory
+		String configPath = cmd.getOption("config-path").orElse("scenarios/auckland_1k/auckland_config.xml");
+
+		// Set up what we want to read from the configuration file
+		Config config = ConfigUtils.loadConfig(configPath, new SwissRailRaptorConfigGroup(), //
 				new EqasimConfigGroup(), //
 				new DiscreteModeChoiceConfigGroup(), //
-				new CalibrationConfigGroup(), new AVConfigGroup(), new DvrpConfigGroup(), new EqasimAvConfigGroup());
+				new CalibrationConfigGroup(), //
+				new AVConfigGroup(), //
+				new DvrpConfigGroup(), //
+				new EqasimAvConfigGroup());
 		AvConfigurator.configure(config);
 		cmd.applyConfiguration(config);
 
-		// Here we customize our configuration by setting the fleet size from the
-		// command line
+		// Here we can customize our configuration on the fly
 		OperatorConfig operatorConfig = AVConfigGroup.getOrCreate(config)
 				.getOperatorConfig(OperatorConfig.DEFAULT_OPERATOR_ID);
-		operatorConfig.getGeneratorConfig().setNumberOfVehicles(Integer.parseInt(cmd.getOptionStrict("fleet-size")));
-		operatorConfig.getDispatcherConfig().setType("DemandSupplyBalancingDispatcher");
+		operatorConfig.getDispatcherConfig().setType("ExtDemandSupplyBeamSharing");
 
-		// Open server port for clients to connect to (e.g. viewer)
-		SimulationServer.INSTANCE.startAcceptingNonBlocking();
-		SimulationServer.INSTANCE.setWaitForClients(false);
+		// Uncomment the following lines to use advanced dispatchers with virtual
+		// networks and travel data estimation. For that, GLPK must be set up correctly.
 
-		// This *can* be used for advanced dispatchers, but GLPK must be set up
-		// properly.
 		// operatorConfig.getParams().put("virtualNetworkPath",
 		// "aucklandVirtualNetwork");
 		// operatorConfig.getParams().put("travelDataPath", "aucklandTravelData");
 
+		// Set up how we want to load the scenario
 		Scenario scenario = ScenarioUtils.createScenario(config);
 		EqasimConfigurator.configureScenario(scenario);
+		scenario.getPopulation().getFactory().getRouteFactories().setRouteFactory(AVRoute.class, new AVRouteFactory());
 		ScenarioUtils.loadScenario(scenario);
 		EqasimConfigurator.adjustScenario(scenario);
 
-		// The AvConfigurator provides some convenience functions to adjust the
-		// scenario. Here, we add the mode 'av' to all links that have the 'car' mode
-		// and define that all links belong to one waiting time estimation group (i.e.
-		// we estimate an overall waiting time average over all links).
-		AvConfigurator.configureCarLinks(scenario);
-		AvConfigurator.configureUniformWaitingTimeGroup(scenario);
-
+		// Set up the MATSim controller
 		Controler controller = new Controler(scenario);
 		EqasimConfigurator.configureController(controller);
 		controller.addOverridingModule(new EqasimAnalysisModule());
@@ -99,6 +103,14 @@ public class RunSimulation {
 		ScenarioOptions scenarioOptions = new ScenarioOptions(workingDirectory, ScenarioOptionsBase.getDefault());
 		scenarioOptions.setProperty("virtualNetwork", "");
 		scenarioOptions.setProperty("travelData", "");
+		scenarioOptions.setProperty("LocationSpec", "AUCKLAND");
+		scenarioOptions.setProperty("simuConfig",
+				config.getContext().getPath().toString().replace(workingDirectory.getAbsolutePath(), ""));
+		scenarioOptions.saveAndOverwriteAmodeusOptions();
+
+		// Open server port for clients to connect to (e.g. viewer)
+		SimulationServer.INSTANCE.startAcceptingNonBlocking();
+		SimulationServer.INSTANCE.setWaitForClients(false);
 
 		MatsimAmodeusDatabase db = MatsimAmodeusDatabase.initialize(scenario.getNetwork(),
 				new AucklandReferenceFrame());

@@ -1,4 +1,4 @@
-package org.eqasim.auckland_example;
+package org.eqasim.auckland_example.simulation;
 
 import org.eqasim.auckland.costs.AucklandCostParameters;
 import org.eqasim.automated_vehicles.mode_choice.cost.AvCostParameters;

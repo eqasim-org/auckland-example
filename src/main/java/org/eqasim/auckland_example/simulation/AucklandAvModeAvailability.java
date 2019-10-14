@@ -1,4 +1,4 @@
-package org.eqasim.auckland_example;
+package org.eqasim.auckland_example.simulation;
 
 import java.util.Arrays;
 import java.util.Collection;

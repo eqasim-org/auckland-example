@@ -1,4 +1,4 @@
-package org.eqasim.auckland_example;
+package org.eqasim.auckland_example.simulation;
 
 import org.eqasim.auckland_example.my_dispatcher.MyDispatcher;
 import org.matsim.core.controler.AbstractModule;

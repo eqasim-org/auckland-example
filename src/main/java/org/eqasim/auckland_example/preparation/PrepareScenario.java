@@ -2,8 +2,11 @@ package org.eqasim.auckland_example.preparation;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.eqasim.auckland_example.AucklandAvModeAvailability;
+import org.eqasim.auckland_example.simulation.AucklandAvModeAvailability;
 import org.eqasim.automated_vehicles.components.AvConfigurator;
 import org.eqasim.core.simulation.EqasimConfigurator;
 import org.matsim.api.core.v01.Scenario;
@@ -40,14 +43,26 @@ public class PrepareScenario {
 		AvConfigurator.configure(config);
 		cmd.applyConfiguration(config);
 
+		AVConfigGroup.getOrCreate(config).setAllowedLinkMode("car");
+
 		OperatorConfig operatorConfig = AVConfigGroup.getOrCreate(config)
 				.getOperatorConfig(OperatorConfig.DEFAULT_OPERATOR_ID);
+		operatorConfig.getGeneratorConfig().setNumberOfVehicles(100);
+		operatorConfig.getDispatcherConfig().setType("DemandSupplyBalancingDispatcher");
 		operatorConfig.getWaitingTimeConfig().setEstimationAlpha(0.1);
 		operatorConfig.getWaitingTimeConfig().setEstimationLinkAttribute("avWaitingTimeGroup");
 
 		DiscreteModeChoiceConfigGroup dmcConfig = (DiscreteModeChoiceConfigGroup) config.getModules()
 				.get(DiscreteModeChoiceConfigGroup.GROUP_NAME);
 		dmcConfig.setModeAvailability(AucklandAvModeAvailability.NAME);
+
+		// Operating area
+		dmcConfig.getShapeFileConstraintConfigGroup().setPath("../operating_area/operating_area.shp");
+		dmcConfig.getShapeFileConstraintConfigGroup().setConstrainedModes(Collections.singleton("av"));
+
+		Set<String> constraints = new HashSet<>(dmcConfig.getTripConstraints());
+		constraints.add("ShapeFile");
+		dmcConfig.setTripConstraints(constraints);
 
 		Scenario scenario = ScenarioUtils.createScenario(config);
 		EqasimConfigurator.configureScenario(scenario);
