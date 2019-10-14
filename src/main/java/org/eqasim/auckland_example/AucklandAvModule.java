@@ -10,9 +10,14 @@ import org.eqasim.core.simulation.mode_choice.AbstractEqasimExtension;
 import org.eqasim.core.simulation.mode_choice.ParameterDefinition;
 import org.eqasim.core.simulation.mode_choice.parameters.ModeParameters;
 import org.matsim.core.config.CommandLine;
+import org.matsim.core.utils.io.IOUtils;
 
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+
+import ch.ethz.matsim.av.network.AVNetworkFilter;
+import ch.ethz.matsim.av.network.NullNetworkFilter;
+import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
 
 public class AucklandAvModule extends AbstractEqasimExtension {
 	private final CommandLine commandLine;
@@ -25,7 +30,7 @@ public class AucklandAvModule extends AbstractEqasimExtension {
 	protected void installEqasimExtension() {
 		bindModeAvailability(AucklandAvModeAvailability.NAME).to(AucklandAvModeAvailability.class);
 	}
-	
+
 	@Provides
 	@Singleton
 	public AucklandAvCostParameters provideAucklandAvCostParameters(EqasimAvConfigGroup config) {
@@ -38,7 +43,7 @@ public class AucklandAvModule extends AbstractEqasimExtension {
 		ParameterDefinition.applyCommandLine("cost-parameter", commandLine, parameters);
 		return parameters;
 	}
-	
+
 	@Provides
 	@Singleton
 	public AvCostParameters provideAvCostParameters(AucklandAvCostParameters parameters) {
@@ -74,5 +79,17 @@ public class AucklandAvModule extends AbstractEqasimExtension {
 	@Singleton
 	public ModeParameters provideModeParameters(AucklandAvModeParameters parameters) {
 		return parameters;
+	}
+
+	@Provides
+	@Singleton
+	public AVNetworkFilter provideAVNetworkFilter(DiscreteModeChoiceConfigGroup dmcConfig) {
+		if (dmcConfig.getTripConstraints().contains("ShapeFile")
+				&& dmcConfig.getShapeFileConstraintConfigGroup().getPath() != null) {
+			return AucklandAvNetworkFilter.create(
+					IOUtils.newUrl(getConfig().getContext(), dmcConfig.getShapeFileConstraintConfigGroup().getPath()));
+		} else {
+			return new NullNetworkFilter();
+		}
 	}
 }

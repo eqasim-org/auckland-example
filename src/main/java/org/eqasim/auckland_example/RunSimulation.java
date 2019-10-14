@@ -23,6 +23,7 @@ import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.scenario.ScenarioUtils;
 
+import ch.ethz.idsc.amodeus.dispatcher.DemandSupplyBalancingDispatcher;
 import ch.ethz.idsc.amodeus.matsim.mod.AmodeusDatabaseModule;
 import ch.ethz.idsc.amodeus.matsim.mod.AmodeusDispatcherModule;
 import ch.ethz.idsc.amodeus.matsim.mod.AmodeusModule;
@@ -60,7 +61,7 @@ public class RunSimulation {
 		OperatorConfig operatorConfig = AVConfigGroup.getOrCreate(config)
 				.getOperatorConfig(OperatorConfig.DEFAULT_OPERATOR_ID);
 		operatorConfig.getGeneratorConfig().setNumberOfVehicles(Integer.parseInt(cmd.getOptionStrict("fleet-size")));
-		operatorConfig.getDispatcherConfig().setType("GlobalBipartiteMatchingDispatcher");
+		operatorConfig.getDispatcherConfig().setType("DemandSupplyBalancingDispatcher");
 
 		// This *can* be used for advanced dispatchers, but GLPK must be set up
 		// properly.
