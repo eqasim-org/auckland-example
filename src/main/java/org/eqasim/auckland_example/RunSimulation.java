@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.eqasim.auckland.AucklandModule;
+import org.eqasim.auckland_example.my_dispatcher.MyDispatcher;
 import org.eqasim.automated_vehicles.components.AvConfigurator;
 import org.eqasim.automated_vehicles.components.EqasimAvConfigGroup;
 import org.eqasim.automated_vehicles.mode_choice.AvModeChoiceModule;
@@ -20,6 +21,7 @@ import org.matsim.core.config.CommandLine;
 import org.matsim.core.config.CommandLine.ConfigurationException;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.scenario.ScenarioUtils;
 
@@ -38,6 +40,7 @@ import ch.ethz.matsim.av.config.AVConfigGroup;
 import ch.ethz.matsim.av.config.operator.OperatorConfig;
 import ch.ethz.matsim.av.framework.AVModule;
 import ch.ethz.matsim.av.framework.AVQSimModule;
+import ch.ethz.matsim.av.framework.AVUtils;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
 import ch.sbb.matsim.config.SwissRailRaptorConfigGroup;
 
@@ -60,7 +63,7 @@ public class RunSimulation {
 		OperatorConfig operatorConfig = AVConfigGroup.getOrCreate(config)
 				.getOperatorConfig(OperatorConfig.DEFAULT_OPERATOR_ID);
 		operatorConfig.getGeneratorConfig().setNumberOfVehicles(Integer.parseInt(cmd.getOptionStrict("fleet-size")));
-		operatorConfig.getDispatcherConfig().setType("GlobalBipartiteMatchingDispatcher");
+		operatorConfig.getDispatcherConfig().setType("MyDispatcher");
 
 		// This *can* be used for advanced dispatchers, but GLPK must be set up
 		// properly.
@@ -106,6 +109,13 @@ public class RunSimulation {
 		controller.addOverridingModule(new AmodeusDatabaseModule(db));
 		controller.addOverridingModule(new AmodeusVirtualNetworkModule(scenarioOptions));
 		controller.addOverridingModule(new DatabaseModule());
+        controller.addOverridingModule(new AbstractModule() {
+            @Override
+            public void install() {
+                AVUtils.registerDispatcherFactory(binder(), //
+                        MyDispatcher.class.getSimpleName(), MyDispatcher.Factory.class);
+            }
+        });
 
 		// This is not totally obvious, but we need to adjust the QSim components if we
 		// have AVs
