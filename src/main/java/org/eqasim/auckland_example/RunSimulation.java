@@ -33,6 +33,7 @@ import ch.ethz.idsc.amodeus.matsim.mod.AmodeusVehicleToVSGeneratorModule;
 import ch.ethz.idsc.amodeus.matsim.mod.AmodeusVirtualNetworkModule;
 import ch.ethz.idsc.amodeus.net.DatabaseModule;
 import ch.ethz.idsc.amodeus.net.MatsimAmodeusDatabase;
+import ch.ethz.idsc.amodeus.net.SimulationServer;
 import ch.ethz.idsc.amodeus.options.ScenarioOptions;
 import ch.ethz.idsc.amodeus.options.ScenarioOptionsBase;
 import ch.ethz.idsc.amodeus.util.io.MultiFileTools;
@@ -63,8 +64,13 @@ public class RunSimulation {
 		OperatorConfig operatorConfig = AVConfigGroup.getOrCreate(config)
 				.getOperatorConfig(OperatorConfig.DEFAULT_OPERATOR_ID);
 		operatorConfig.getGeneratorConfig().setNumberOfVehicles(Integer.parseInt(cmd.getOptionStrict("fleet-size")));
-		operatorConfig.getDispatcherConfig().setType("MyDispatcher");
+		operatorConfig.getDispatcherConfig().setType("GlobalBipartiteMatchingDispatcher");
 
+		
+        /** open server port for clients to connect to */
+        SimulationServer.INSTANCE.startAcceptingNonBlocking();
+        SimulationServer.INSTANCE.setWaitForClients(false);
+		
 		// This *can* be used for advanced dispatchers, but GLPK must be set up
 		// properly.
 		// operatorConfig.getParams().put("virtualNetworkPath",
