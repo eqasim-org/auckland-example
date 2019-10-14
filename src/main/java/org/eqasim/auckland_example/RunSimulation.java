@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.eqasim.auckland.AucklandModule;
-import org.eqasim.auckland_example.my_dispatcher.MyDispatcher;
 import org.eqasim.automated_vehicles.components.AvConfigurator;
 import org.eqasim.automated_vehicles.components.EqasimAvConfigGroup;
 import org.eqasim.automated_vehicles.mode_choice.AvModeChoiceModule;
@@ -21,11 +20,9 @@ import org.matsim.core.config.CommandLine;
 import org.matsim.core.config.CommandLine.ConfigurationException;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
-import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.scenario.ScenarioUtils;
 
-import ch.ethz.idsc.amodeus.dispatcher.DemandSupplyBalancingDispatcher;
 import ch.ethz.idsc.amodeus.matsim.mod.AmodeusDatabaseModule;
 import ch.ethz.idsc.amodeus.matsim.mod.AmodeusDispatcherModule;
 import ch.ethz.idsc.amodeus.matsim.mod.AmodeusModule;
@@ -42,7 +39,6 @@ import ch.ethz.matsim.av.config.AVConfigGroup;
 import ch.ethz.matsim.av.config.operator.OperatorConfig;
 import ch.ethz.matsim.av.framework.AVModule;
 import ch.ethz.matsim.av.framework.AVQSimModule;
-import ch.ethz.matsim.av.framework.AVUtils;
 import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
 import ch.sbb.matsim.config.SwissRailRaptorConfigGroup;
 
@@ -67,11 +63,10 @@ public class RunSimulation {
 		operatorConfig.getGeneratorConfig().setNumberOfVehicles(Integer.parseInt(cmd.getOptionStrict("fleet-size")));
 		operatorConfig.getDispatcherConfig().setType("DemandSupplyBalancingDispatcher");
 
-		
-        /** open server port for clients to connect to */
-        SimulationServer.INSTANCE.startAcceptingNonBlocking();
-        SimulationServer.INSTANCE.setWaitForClients(false);
-		
+		// Open server port for clients to connect to (e.g. viewer)
+		SimulationServer.INSTANCE.startAcceptingNonBlocking();
+		SimulationServer.INSTANCE.setWaitForClients(false);
+
 		// This *can* be used for advanced dispatchers, but GLPK must be set up
 		// properly.
 		// operatorConfig.getParams().put("virtualNetworkPath",
@@ -116,13 +111,7 @@ public class RunSimulation {
 		controller.addOverridingModule(new AmodeusDatabaseModule(db));
 		controller.addOverridingModule(new AmodeusVirtualNetworkModule(scenarioOptions));
 		controller.addOverridingModule(new DatabaseModule());
-        controller.addOverridingModule(new AbstractModule() {
-            @Override
-            public void install() {
-                AVUtils.registerDispatcherFactory(binder(), //
-                        MyDispatcher.class.getSimpleName(), MyDispatcher.Factory.class);
-            }
-        });
+		controller.addOverridingModule(new AucklandDispatcherModule());
 
 		// This is not totally obvious, but we need to adjust the QSim components if we
 		// have AVs

@@ -8,6 +8,6 @@ import ch.ethz.matsim.av.framework.AVUtils;
 public class AucklandDispatcherModule extends AbstractModule {
 	@Override
 	public void install() {
-		AVUtils.registerDispatcherFactory(binder(), "MyDispatcher", MyDispatcher.Factory.class);
+		AVUtils.registerDispatcherFactory(binder(), MyDispatcher.class.getSimpleName(), MyDispatcher.Factory.class);
 	}
 }
