@@ -72,7 +72,6 @@ public class RunSimulation {
 		// Here we can customize our configuration on the fly
 		OperatorConfig operatorConfig = AVConfigGroup.getOrCreate(config)
 				.getOperatorConfig(OperatorConfig.DEFAULT_OPERATOR_ID);
-		operatorConfig.getDispatcherConfig().setType("ExtDemandSupplyBeamSharing");
 
 		// Uncomment the following lines to use advanced dispatchers with virtual
 		// networks and travel data estimation. For that, GLPK must be set up correctly.
