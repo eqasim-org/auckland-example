@@ -16,9 +16,12 @@ import ch.ethz.matsim.av.framework.AVModule;
 import ch.ethz.matsim.av.router.AVRouter;
 
 public class MyDispatcher extends RebalancingDispatcher {
+	private final Network network;
+
 	public MyDispatcher(Config config, OperatorConfig operatorConfig, TravelTime travelTime, AVRouter router,
-			EventsManager eventsManager, MatsimAmodeusDatabase db) {
+			EventsManager eventsManager, MatsimAmodeusDatabase db, Network network) {
 		super(config, operatorConfig, travelTime, router, eventsManager, db);
+		this.network = network;
 	}
 
 	@Override
@@ -42,7 +45,7 @@ public class MyDispatcher extends RebalancingDispatcher {
 
 		@Override
 		public AVDispatcher createDispatcher(OperatorConfig operatorConfig, AVRouter router, Network network) {
-			return new MyDispatcher(config, operatorConfig, travelTime, router, eventsManager, db);
+			return new MyDispatcher(config, operatorConfig, travelTime, router, eventsManager, db, network);
 		}
 	}
 }

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.eqasim.auckland.AucklandModule;
+import org.eqasim.auckland_example.analysis.AnalysisModule;
 import org.eqasim.auckland_example.simulation.AucklandAvModule;
 import org.eqasim.auckland_example.simulation.AucklandDispatcherModule;
 import org.eqasim.auckland_example.simulation.AucklandReferenceFrame;
@@ -59,7 +60,8 @@ public class RunSimulation {
 		String configPath = cmd.getOption("config-path").orElse("scenarios/auckland_1k/auckland_config.xml");
 
 		// Set up what we want to read from the configuration file
-		Config config = ConfigUtils.loadConfig(configPath, new SwissRailRaptorConfigGroup(), //
+		Config config = ConfigUtils.loadConfig(configPath, //
+				new SwissRailRaptorConfigGroup(), //
 				new EqasimConfigGroup(), //
 				new DiscreteModeChoiceConfigGroup(), //
 				new CalibrationConfigGroup(), //
