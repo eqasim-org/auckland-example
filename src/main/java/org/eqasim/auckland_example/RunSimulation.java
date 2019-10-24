@@ -50,7 +50,7 @@ import ch.sbb.matsim.config.SwissRailRaptorConfigGroup;
 public class RunSimulation {
 	static public void main(String[] args) throws ConfigurationException, IOException {
 		CommandLine cmd = new CommandLine.Builder(args) //
-				.allowOptions("config-path") //
+				.allowOptions("config-path", "fleet-size", "policy", "operating-area-path") //
 				.allowPrefixes("mode-parameter", "cost-parameter") //
 				.build();
 
@@ -73,6 +73,20 @@ public class RunSimulation {
 		// Here we can customize our configuration on the fly
 		OperatorConfig operatorConfig = AVConfigGroup.getOrCreate(config)
 				.getOperatorConfig(OperatorConfig.DEFAULT_OPERATOR_ID);
+
+		if (cmd.hasOption("fleet-size")) {
+			operatorConfig.getGeneratorConfig()
+					.setNumberOfVehicles(Integer.parseInt(cmd.getOptionStrict("fleet-size")));
+		}
+
+		if (cmd.hasOption("policy")) {
+			operatorConfig.getDispatcherConfig().setType(cmd.getOptionStrict("policy"));
+		}
+
+		if (cmd.hasOption("operating-area-path")) {
+			DiscreteModeChoiceConfigGroup dmcConfig = DiscreteModeChoiceConfigGroup.getOrCreate(config);
+			dmcConfig.getShapeFileConstraintConfigGroup().setPath(cmd.getOptionStrict("operating-area-path"));
+		}
 
 		// Set up how we want to load the scenario
 		Scenario scenario = ScenarioUtils.createScenario(config);
