@@ -51,6 +51,9 @@ public class PrepareScenario {
 		operatorConfig.getDispatcherConfig().setType("DemandSupplyBalancingDispatcher");
 		operatorConfig.getWaitingTimeConfig().setEstimationAlpha(0.1);
 		operatorConfig.getWaitingTimeConfig().setEstimationLinkAttribute("avWaitingTimeGroup");
+		operatorConfig.getWaitingTimeConfig().setEstimationInterval(3600.0);
+		operatorConfig.getWaitingTimeConfig().setEstimationStartTime(4.0 * 3600.0);
+		operatorConfig.getWaitingTimeConfig().setEstimationEndTime(23.0 * 3600.0);
 
 		DiscreteModeChoiceConfigGroup dmcConfig = (DiscreteModeChoiceConfigGroup) config.getModules()
 				.get(DiscreteModeChoiceConfigGroup.GROUP_NAME);

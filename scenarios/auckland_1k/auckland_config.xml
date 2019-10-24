@@ -154,10 +154,10 @@
 				<param name="constantWaitingTimeAttribute" value="null" />
 				<param name="defaultWaitingTime" value="300.0" />
 				<param name="estimationAlpha" value="0.1" />
-				<param name="estimationEndTime" value="22:00:00" />
-				<param name="estimationInterval" value="00:05:00" />
+				<param name="estimationEndTime" value="23:00:00" />
+				<param name="estimationInterval" value="01:00:00" />
 				<param name="estimationLinkAttribute" value="avWaitingTimeGroup" />
-				<param name="estimationStartTime" value="05:00:00" />
+				<param name="estimationStartTime" value="04:00:00" />
 			</parameterset>
 		</parameterset>
 		<parameterset type="scoring" >

@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.eqasim.auckland.AucklandModule;
-import org.eqasim.auckland_example.analysis.AnalysisModule;
 import org.eqasim.auckland_example.simulation.AucklandAvModule;
 import org.eqasim.auckland_example.simulation.AucklandDispatcherModule;
 import org.eqasim.auckland_example.simulation.AucklandReferenceFrame;
@@ -74,13 +73,6 @@ public class RunSimulation {
 		// Here we can customize our configuration on the fly
 		OperatorConfig operatorConfig = AVConfigGroup.getOrCreate(config)
 				.getOperatorConfig(OperatorConfig.DEFAULT_OPERATOR_ID);
-
-		// Uncomment the following lines to use advanced dispatchers with virtual
-		// networks and travel data estimation. For that, GLPK must be set up correctly.
-
-		// operatorConfig.getParams().put("virtualNetworkPath",
-		// "aucklandVirtualNetwork");
-		// operatorConfig.getParams().put("travelDataPath", "aucklandTravelData");
 
 		// Set up how we want to load the scenario
 		Scenario scenario = ScenarioUtils.createScenario(config);
