@@ -16,9 +16,9 @@ based on the [eqasim](http://eqasim.org/) transport simulation pipeline.
 
 The simulations in this repository try to explore how different fleet operating policies interact
 with traveller preferences. To learn more about the research question and examples from our 
-ongoing studies, make sure to slide through our [workshop presentation from ITSC 2019](https://slides.com/sebastianhorl/itsc19). 
+ongoing studies, make sure to slide through our [workshop presentation from ITSC 2019](https://slides.com/sebastianhorl/itsc-2019). 
 
-## Running the simulation 5 minutes
+## Running the simulation in 5 minutes
 
 To run a basic simulation you'll need either [Eclipse](https://www.eclipse.org/downloads/) or IntelliJ and you need a working
 [Java JDK](https://adoptopenjdk.net/). 
@@ -87,7 +87,7 @@ By the way, if you want to see the dispatchers in action with more agents, you c
 
 While it is fun to try out all of these different things, you may have come to this repository to do some programming and fleet control on your own. To do that, choose the `MyDispatcher` in `auckland_config.xml`. Then, check out the `my_dispatcher` package of this repository in Eclipse. The `MyDispatcher` class is an empty operating policy that does nothing at all for now. It is your task to fill it with dispatching commands for your vehicles. To learn how to do that check out the documentation of AMoDeus or follow our workshop :)
 
-## How can I learn more?
+## Where can I learn more?
 
 To learn more about all that has been shown here, visit the websites of [MATSim](http://www.matsim.org), [eqasim](http://eqasim.org/), and [AMoDeus](https://amodeus.science/). Also, have a look at some of or recent papers that make use of the mentioned choice models and control strategies:
 
