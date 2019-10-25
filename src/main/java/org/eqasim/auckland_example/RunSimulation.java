@@ -101,15 +101,11 @@ public class RunSimulation {
 		scenarioOptions.setProperty("virtualNetwork", "");
 		scenarioOptions.setProperty("travelData", "");
 		scenarioOptions.setProperty("LocationSpec", "AUCKLAND");
+
 		Path absoluteConfigPath = Paths.get(config.getContext().toURI());
-		System.out.println(absoluteConfigPath);
 		Path workingDirectoryPath = FileSystems.getDefault().getPath(workingDirectory.getAbsolutePath());
 		scenarioOptions.setProperty("simuConfig", workingDirectoryPath.relativize(absoluteConfigPath).toString());
-		System.out.println(absoluteConfigPath.relativize(workingDirectoryPath).toString());
-		System.out.println(workingDirectoryPath);
-		System.out.println(workingDirectoryPath.relativize(absoluteConfigPath).toString());
 
-       // System.exit(0);
 		scenarioOptions.saveAndOverwriteAmodeusOptions();
 
 		// Open server port for clients to connect to (e.g. viewer)
@@ -135,9 +131,6 @@ public class RunSimulation {
 			EqasimTransitQSimModule.configure(configurator);
 			AVQSimModule.configureComponents(configurator);
 		});
-		
-		config.controler().setOutputDirectory("output_500veh");
-		operatorConfig.getGeneratorConfig().setNumberOfVehicles(500);
 
 		controller.run();
 	}
