@@ -129,6 +129,9 @@ public class RunSimulation {
 			EqasimTransitQSimModule.configure(configurator);
 			AVQSimModule.configureComponents(configurator);
 		});
+		
+		config.controler().setOutputDirectory("output_500veh");
+		operatorConfig.getGeneratorConfig().setNumberOfVehicles(500);
 
 		controller.run();
 	}
