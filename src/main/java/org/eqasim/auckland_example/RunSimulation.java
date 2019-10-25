@@ -2,6 +2,8 @@ package org.eqasim.auckland_example;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 
 import org.eqasim.auckland.AucklandModule;
 import org.eqasim.auckland_example.simulation.AucklandAvModule;
@@ -97,8 +99,11 @@ public class RunSimulation {
 		scenarioOptions.setProperty("virtualNetwork", "");
 		scenarioOptions.setProperty("travelData", "");
 		scenarioOptions.setProperty("LocationSpec", "AUCKLAND");
-		scenarioOptions.setProperty("simuConfig",
-				config.getContext().getPath().toString().replace(workingDirectory.getAbsolutePath(), ""));
+
+		Path absoluteConfigPath = FileSystems.getDefault().getPath(config.getContext().getPath());
+		Path workingDirectoryPath = FileSystems.getDefault().getPath(workingDirectory.getAbsolutePath());
+		scenarioOptions.setProperty("simuConfig", absoluteConfigPath.relativize(workingDirectoryPath).toString());
+
 		scenarioOptions.saveAndOverwriteAmodeusOptions();
 
 		// Open server port for clients to connect to (e.g. viewer)
