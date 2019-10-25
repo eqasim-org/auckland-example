@@ -2,8 +2,10 @@ package org.eqasim.auckland_example;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.eqasim.auckland.AucklandModule;
 import org.eqasim.auckland_example.simulation.AucklandAvModule;
@@ -50,7 +52,7 @@ import ch.ethz.matsim.discrete_mode_choice.modules.config.DiscreteModeChoiceConf
 import ch.sbb.matsim.config.SwissRailRaptorConfigGroup;
 
 public class RunSimulation {
-	static public void main(String[] args) throws ConfigurationException, IOException {
+	static public void main(String[] args) throws ConfigurationException, IOException, URISyntaxException {
 		CommandLine cmd = new CommandLine.Builder(args) //
 				.allowOptions("config-path") //
 				.allowPrefixes("mode-parameter", "cost-parameter") //
@@ -99,11 +101,15 @@ public class RunSimulation {
 		scenarioOptions.setProperty("virtualNetwork", "");
 		scenarioOptions.setProperty("travelData", "");
 		scenarioOptions.setProperty("LocationSpec", "AUCKLAND");
-
-		Path absoluteConfigPath = FileSystems.getDefault().getPath(config.getContext().getPath());
+		Path absoluteConfigPath = Paths.get(config.getContext().toURI());
+		System.out.println(absoluteConfigPath);
 		Path workingDirectoryPath = FileSystems.getDefault().getPath(workingDirectory.getAbsolutePath());
-		scenarioOptions.setProperty("simuConfig", absoluteConfigPath.relativize(workingDirectoryPath).toString());
+		scenarioOptions.setProperty("simuConfig", workingDirectoryPath.relativize(absoluteConfigPath).toString());
+		System.out.println(absoluteConfigPath.relativize(workingDirectoryPath).toString());
+		System.out.println(workingDirectoryPath);
+		System.out.println(workingDirectoryPath.relativize(absoluteConfigPath).toString());
 
+       // System.exit(0);
 		scenarioOptions.saveAndOverwriteAmodeusOptions();
 
 		// Open server port for clients to connect to (e.g. viewer)
